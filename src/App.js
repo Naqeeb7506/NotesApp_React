@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import AddNote from "./AddNote";
+import Note from "./Note";
 
 function App() {
+  let [item, addItem] = useState([]);
+
+  let addNote = (note) => {
+    addItem((prevData) => {
+      return [...prevData, note];
+    });
+  };
+
+  let onDelete = (id) => {
+    addItem((oldData) => {
+      return oldData.filter((curdata, index) => {
+        console.log(id, index);
+        return id !== index;
+      });
+    });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <div className="main">
+        <AddNote passNote={addNote} />
+        <div className="container">
+          {item?.map((val, index) => {
+            return (
+              <Note
+                key={index}
+                id={index}
+                title={val.title}
+                content={val.content}
+                onSelect={onDelete}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 }
 
